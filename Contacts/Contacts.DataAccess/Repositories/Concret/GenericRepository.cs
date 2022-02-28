@@ -17,6 +17,7 @@
         public virtual async Task<T> Add(T entity)
         {
             await _entity.AddAsync(entity);
+            await _context.SaveChangesAsync();
             return entity;
         }
 

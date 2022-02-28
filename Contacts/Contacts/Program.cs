@@ -1,3 +1,4 @@
+using Contacts.BusinessLogic.Entensions;
 using Contacts.DataAccess.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +10,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //services
-builder.Services.InjectServices(builder.Configuration);
+builder.Services.InjectDataAccessServices(builder.Configuration);
+builder.Services.InjectBusinessServices();
 
 var app = builder.Build();
 

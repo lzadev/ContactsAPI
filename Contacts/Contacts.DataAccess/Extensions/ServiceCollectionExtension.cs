@@ -8,7 +8,7 @@
     using Microsoft.Extensions.DependencyInjection;
     public static class ServiceCollectionExtension
     {
-        public static void InjectServices(this IServiceCollection services, IConfiguration configuration)
+        public static void InjectDataAccessServices(this IServiceCollection services, IConfiguration configuration)
         {
             //context
             services.AddDbContext<ContactContext>(options =>
