@@ -2,12 +2,8 @@ using Contacts.BusinessLogic.Entensions;
 using Contacts.DataAccess.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 //services
 builder.Services.InjectDataAccessServices(builder.Configuration);
@@ -15,7 +11,6 @@ builder.Services.InjectBusinessServices();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
