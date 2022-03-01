@@ -4,12 +4,12 @@
     using FluentValidation.Results;
     public static class ErrorsFromValidationResult
     {
-        public static List<ErrorDetails> GetErrorsDetails(ValidationResult validationResult)
+        public static List<ErrorDetails> GetErrorsDetails(IEnumerable<ValidationFailure> errors)
         {
             var errorsDetails = new List<ErrorDetails>();
-            if (validationResult.Errors.Any())
+            if (errors.Any())
             {
-                foreach (var error in validationResult.Errors)
+                foreach (var error in errors)
                 {
                     errorsDetails.Add(new ErrorDetails { ErrorMessage = error.ErrorMessage });
                 }

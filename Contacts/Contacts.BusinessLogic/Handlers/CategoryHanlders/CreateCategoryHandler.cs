@@ -4,10 +4,11 @@
     using Contacts.BusinessLogic.ApiResponse;
     using Contacts.BusinessLogic.Commands.CategoryCommands;
     using Contacts.BusinessLogic.DTOs.CategoryDTOs;
-    using Contacts.BusinessLogic.Helpers;
+    using Contacts.BusinessLogic.Exceptions;
     using Contacts.BusinessLogic.Validators;
     using Contacts.DataAccess.Repositories.Abstract;
     using Contacts.Domain.Entities;
+    using FluentValidation;
     using MediatR;
     public class CreateCategoryHandler : IRequestHandler<CreateCategoryCommand, Response<CategoryDto>>
     {
@@ -21,18 +22,26 @@
         }
         public async Task<Response<CategoryDto>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
-            var createCategoryValidator = new CreateCategoryValidator();
-            var resultValidator = createCategoryValidator.Validate(request.model);
-            if (!resultValidator.IsValid)
+            try
             {
-                var errorsDetails = ErrorsFromValidationResult.GetErrorsDetails(resultValidator);
-                return Response.Fail<CategoryDto>(400, errorsDetails);
+                var createCategoryValidator = new CreateCategoryValidator();
+                var resultValidator = createCategoryValidator.Validate(request.model);
+                if (!resultValidator.IsValid)
+                {
+                    throw new ValidationException(resultValidator.Errors);
+                }
+
+                var category = _mapper.Map<Category>(request.model);
+                var categoryCreated = _mapper.Map<CategoryDto>(await _categoryRepository.Add(category));
+
+                return Response.Ok(categoryCreated);
+            }
+            catch (Exception ex)
+            {
+                //TODO make a log for exceptions
+                throw new InternalErrorException(ex.Message);
             }
 
-            var category = _mapper.Map<Category>(request.model);
-            var categoryCreated = _mapper.Map<CategoryDto>(await _categoryRepository.Add(category));
-
-            return Response.Ok(categoryCreated, 200);
         }
     }
 }

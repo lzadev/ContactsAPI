@@ -1,12 +1,14 @@
 ﻿namespace Contacts.BusinessLogic.Handlers.CategoryHanlders
 {
     using AutoMapper;
+    using Contacts.BusinessLogic.ApiResponse;
     using Contacts.BusinessLogic.DTOs.CategoryDTOs;
+    using Contacts.BusinessLogic.Exceptions;
     using Contacts.BusinessLogic.Queries.CategoryQueries;
     using Contacts.DataAccess.Repositories.Abstract;
     using MediatR;
 
-    public class GetAllCategoriesHandler : IRequestHandler<GetAllCategoriesQuery, IEnumerable<CategoryDto>>
+    public class GetAllCategoriesHandler : IRequestHandler<GetAllCategoriesQuery, Response<IEnumerable<CategoryDto>>>
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
@@ -16,11 +18,19 @@
             _categoryRepository = categoryRepository;
             _mapper = mapper;
         }
-        public async Task<IEnumerable<CategoryDto>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
+        public async Task<Response<IEnumerable<CategoryDto>>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
         {
-            var categories = await _categoryRepository.GetAll();
+            try
+            {
+                var categories = await _categoryRepository.GetAll();
+                var categoriesToReturn = _mapper.Map<IEnumerable<CategoryDto>>(categories);
 
-            return _mapper.Map<IEnumerable<CategoryDto>>(categories);
+                return Response.Ok(categoriesToReturn);
+            }
+            catch (Exception ex)
+            {
+                throw new InternalErrorException(ex.Message);
+            }
         }
     }
 }

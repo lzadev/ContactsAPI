@@ -1,9 +1,13 @@
 using Contacts.BusinessLogic.Entensions;
+using Contacts.BusinessLogic.Filters;
 using Contacts.DataAccess.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<GlobalExepctionFilter>();
+});
 builder.Services.AddSwaggerGen();
 //services
 builder.Services.InjectDataAccessServices(builder.Configuration);
