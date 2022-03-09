@@ -16,6 +16,7 @@
             context.HttpContext.Response.ContentType = "application/json";
             context.HttpContext.Response.StatusCode = (int)StatusCodes.Status500InternalServerError;
 
+
             if (exceptionType == typeof(ValidationException))
             {
                 var exception = (ValidationException)context.Exception;
@@ -26,7 +27,17 @@
                 return;
             }
 
-            if(exceptionType == typeof(InternalErrorException))
+            if (exceptionType == typeof(NotFoundException))
+            {
+                var exception = (NotFoundException)context.Exception;
+                errors.Add(new ErrorDetails { ErrorMessage = exception.Message });
+                context.Result = new ObjectResult(Response.Fail<ErrorDetails>(errors));
+                context.HttpContext.Response.StatusCode = (int)StatusCodes.Status400BadRequest;
+                context.ExceptionHandled = true;
+                return;
+            }
+
+            if (exceptionType == typeof(InternalErrorException))
             {
                 var exception = (InternalErrorException)context.Exception;
                 errors.Add(new ErrorDetails { ErrorMessage = exception.Message });
@@ -38,7 +49,7 @@
 
             //UnKnown Exception
             errors.Add(new ErrorDetails { ErrorMessage = context.Exception.Message });
-            context.Result = new ObjectResult(Response.Fail<ErrorDetails>(errors)); 
+            context.Result = new ObjectResult(Response.Fail<ErrorDetails>(errors));
             context.ExceptionHandled = true;
 
         }

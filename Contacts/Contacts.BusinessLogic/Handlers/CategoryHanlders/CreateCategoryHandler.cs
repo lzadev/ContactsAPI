@@ -34,7 +34,7 @@
                 var category = _mapper.Map<Category>(request.model);
                 var categoryCreated = _mapper.Map<CategoryDto>(await _categoryRepository.Add(category));
 
-                return Response.Ok(categoryCreated);
+                return Response.Ok(categoryCreated,"Caterroy create successful.");
             }
             catch (Exception ex)
             {

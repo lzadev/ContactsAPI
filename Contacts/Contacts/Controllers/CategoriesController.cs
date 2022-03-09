@@ -24,11 +24,25 @@
             return Ok(categories);
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult> Get(int id)
+        {
+            var category = await _mediator.Send(new GetCategoryByIdQuery(id));
+            return Ok(category);
+        }
+
         [HttpPost]
         public async Task<ActionResult> Add(CreateCategoryDto model)
         {
             var category = await _mediator.Send(new CreateCategoryCommand(model));
             return Ok(category);
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var result = await _mediator.Send(new DeleteCategoryCommand(id));
+            return Ok(result);
         }
     }
 }

@@ -7,7 +7,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<GlobalExepctionFilter>();
-});
+}).AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 builder.Services.AddSwaggerGen();
 //services
 builder.Services.InjectDataAccessServices(builder.Configuration);
