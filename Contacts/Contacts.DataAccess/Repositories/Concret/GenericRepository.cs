@@ -46,7 +46,7 @@
 
         public virtual async Task<T> GetById(int id)
         {
-            return await _context.Set<T>().FindAsync(id);
+            return await _context.Set<T>().FirstOrDefaultAsync(x=>x.Id == id);
         }
 
         public virtual async Task<T> Update(T entity)

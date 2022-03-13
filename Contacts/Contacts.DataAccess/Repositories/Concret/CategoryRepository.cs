@@ -8,7 +8,6 @@
     {
         public CategoryRepository(ContactContext context) : base(context)
         {
-
         }
     }
 }

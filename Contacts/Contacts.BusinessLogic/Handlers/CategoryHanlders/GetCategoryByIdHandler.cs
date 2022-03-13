@@ -20,11 +20,23 @@
         }
         public async Task<Response<CategoryDto>> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
         {
-            var category = await _categoryRepository.GetById(request.id);
-            if (category == null) throw new NotFoundException($"A category with id {request.id} does not exist");
-            var categoryToReturn = _mapper.Map<CategoryDto>(category);
+            try
+            {
+                var category = await _categoryRepository.GetById(request.id);
+                if (category == null || category.IsDeleted == true || !category.IsActive) throw new NotFoundException($"A category with id {request.id} does not exist");
+                var categoryToReturn = _mapper.Map<CategoryDto>(category);
 
-            return Response.Ok(categoryToReturn);
+                return Response.Ok(categoryToReturn);
+            }
+            catch(NotFoundException ex)
+            {
+                throw ex;
+            }
+            catch(Exception ex)
+            {
+                throw new InternalErrorException("Something went wrong, try it again");
+            }
+
         }
     }
 }

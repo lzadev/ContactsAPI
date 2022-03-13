@@ -37,6 +37,16 @@
                 return;
             }
 
+            if (exceptionType == typeof(BadRequestException))
+            {
+                var exception = (BadRequestException)context.Exception;
+                errors.Add(new ErrorDetails { ErrorMessage = exception.Message });
+                context.Result = new ObjectResult(Response.Fail<ErrorDetails>(errors));
+                context.HttpContext.Response.StatusCode = (int)StatusCodes.Status400BadRequest;
+                context.ExceptionHandled = true;
+                return;
+            }
+
             if (exceptionType == typeof(InternalErrorException))
             {
                 var exception = (InternalErrorException)context.Exception;

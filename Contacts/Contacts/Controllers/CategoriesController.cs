@@ -38,10 +38,17 @@
             return Ok(category);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
             var result = await _mediator.Send(new DeleteCategoryCommand(id));
+            return Ok(result);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Put(int id, UpdateCategoryDto model)
+        {
+            var result = await _mediator.Send(new UpdateCategoryCommand(id,model));
             return Ok(result);
         }
     }

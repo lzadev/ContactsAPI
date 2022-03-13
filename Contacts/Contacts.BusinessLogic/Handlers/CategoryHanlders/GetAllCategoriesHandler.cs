@@ -3,6 +3,7 @@
     using AutoMapper;
     using Contacts.BusinessLogic.ApiResponse;
     using Contacts.BusinessLogic.DTOs.CategoryDTOs;
+    using Contacts.BusinessLogic.Exceptions;
     using Contacts.BusinessLogic.Queries.CategoryQueries;
     using Contacts.DataAccess.Repositories.Abstract;
     using MediatR;
@@ -19,10 +20,18 @@
         }
         public async Task<Response<IEnumerable<CategoryDto>>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
         {
-            var categories = await _categoryRepository.GetAll();
-            var categoriesToReturn = _mapper.Map<IEnumerable<CategoryDto>>(categories);
+            try
+            {
+                var categories = await _categoryRepository.GetAll(x => x.IsActive == true && x.IsDeleted == false);
+                var categoriesToReturn = _mapper.Map<IEnumerable<CategoryDto>>(categories);
 
-            return Response.Ok(categoriesToReturn);
+                return Response.Ok(categoriesToReturn);
+            }
+            catch(Exception ex)
+            {
+                throw new InternalErrorException("Something went wrong, try it again");
+            }
+
         }
     }
 }
